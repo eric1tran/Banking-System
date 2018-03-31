@@ -4,6 +4,7 @@ from random import *
 
 accounts = {}
 
+
 class BankAccount:
     """
     A bank account class with the following properties:
@@ -23,16 +24,19 @@ class BankAccount:
         print("Current Balance: ${:.2f}\n".format(self.balance))
 
     def deposit(self, amount):
-        print("Depositing ${:.2f}...".format(amount))
-        self.balance += int(amount)
-        self.show_balance()
-        self.log_transaction('deposit', amount)
+        if amount < 1:
+            print("Invalid deposit\n")
+        else:
+            print("Depositing ${:.2f}...".format(amount))
+            self.balance += int(amount)
+            self.show_balance()
+            self.log_transaction('deposit', amount)
 
     def withdraw(self, amount):
-        print("Withdrawing ${:.2f}...".format(amount))
         if amount > self.balance:
             print("Insufficient funds\n")
         else:
+            print("Withdrawing ${:.2f}...".format(amount))
             self.balance -= amount
             self.show_balance()
             self.log_transaction('withdrawal', amount)
@@ -62,6 +66,7 @@ def create_account(user_name, initial_deposit, password):
     print("Acccount Number: {}".format(bank_acc.accnum))
     print("Balance: ${:.2f}\n\n".format(int(bank_acc.balance)))
 
+
 def request_password():
     password = input("Enter a password for the account: ")
     confirm_password = input("Re-enter password: ")
@@ -86,42 +91,45 @@ def display_menu():
             "  Enter 'E' to exit. \n")
 
 
-print("Welcome to Bank of amERICa!")
+def main():
+    print("Welcome to Bank of amERICa!")
 
-while True:
-    user_input = display_menu()
-    if user_input.lower() == 'c':
-        print("Great, lets get some information from you...", end="")
-        name = input("What is your full name? ")
-        if validate_account(name):
-            print("You already has an account with us! \n")
-            continue
+    while True:
+        user_input = display_menu()
+        if user_input.lower() == 'c':
+            print("Great, lets get some information from you...", end="")
+            name = input("What is your full name? ")
+            if validate_account(name):
+                print("You already has an account with us! \n")
+                continue
 
-        initial = input("How much would you like for your initial deposit? ")
-        password = request_password()
+            initial = input("How much would you like for your initial deposit? ")
+            password = request_password()
 
-        create_account(name, initial, password)
+            create_account(name, initial, password)
 
-    elif user_input.lower() in "wdbt":
-        name = input("What is the name under the account? ")
-        if validate_account(name):
-            password = input("Enter your password: ")
-            if accounts[name].validate_password(password):
-                if user_input.lower() == 'w':
-                    withdraw_amount = int(input("How much would you like to withdraw? "))
-                    accounts[name].withdraw(withdraw_amount)
-                elif user_input.lower() == 'd':
-                    deposit_amount = int(input("How much would you like to deposit? "))
-                    accounts[name].deposit(deposit_amount)
-                elif user_input.lower() == 'b':
-                    accounts[name].show_balance()
-                elif user_input.lower() == 't':
-                    accounts[name].show_transactions()
+        elif user_input.lower() in "wdbt":
+            name = input("What is the name under the account? ")
+            if validate_account(name):
+                password = input("Enter your password: ")
+                if accounts[name].validate_password(password):
+                    if user_input.lower() == 'w':
+                        withdraw_amount = int(input("How much would you like to withdraw? "))
+                        accounts[name].withdraw(withdraw_amount)
+                    elif user_input.lower() == 'd':
+                        deposit_amount = int(input("How much would you like to deposit? "))
+                        accounts[name].deposit(deposit_amount)
+                    elif user_input.lower() == 'b':
+                        accounts[name].show_balance()
+                    elif user_input.lower() == 't':
+                        accounts[name].show_transactions()
+            else:
+                print("Sorry, you do not have an account with us. Please create one! \n")
+
+        elif user_input == 'e':
+            break
         else:
-            print("Sorry, you do not have an account with us. Please create one! \n")
+            print("Invalid input. Please try again. \n")
 
-    elif user_input == 'e':
-        break
-    else:
-        print("Invalid input. Please try again. \n")
-
+if __name__ == "__main__":
+    main()
